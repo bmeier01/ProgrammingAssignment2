@@ -6,15 +6,15 @@
 ## This function creates a special "matrix" object that can cache its inverse
 
 makeCacheMatrix <- function(x = matrix()) {
-    m <- NULL
+    m <- NULL 
     set <- function(y) {
         x <<- y
         m <<- NULL
     } # set the parameters of the matrix
     get <- function() x # get the value of the matrix
-    setmatrixinv <- function(solve) m <<- solve # set the inverse of the matrix
-    getmatrixinv <- function() m # get the inverse of the matrix
-    list(set = set, get = get,
+    setmatrixinv <- function(solve) m <<- solve # this function is called by cacheSolve to compute the inverse of the matrix
+    getmatrixinv <- function() m # this function provides the inverse of the matrix in cacheSolve if already calculated previously 
+    list(set = set, get = get, # internal methods or functions
     setmatrixinv = setmatrixinv,
     getmatrixinv = getmatrixinv)
 }
@@ -24,14 +24,14 @@ makeCacheMatrix <- function(x = matrix()) {
 ## if it has been calculated before it does not recalculate but returns it from cache.
 
 cacheSolve <- function(x, ...) {
-    m <- x$getmatrixinv() # gets the inverse of the matrix into m
-    if(!is.null(m)) { # tests if m is not NULL, if this is TRUE, inverse has been calculated before and is diplayed
-        message("getting cached data")
-        return(m)       #returns inverse of the matrix
+    m <- x$getmatrixinv() # obtain the inverse of the matrix from cache and store in m
+    if(!is.null(m)) { # tests if m is not NULL. If this is TRUE, inverse has been calculated before and is consecutively diplayed
+        message("getting cached data") # prints this message
+        return(m)       # and returns inverse of the matrix (in this case from cache)
     }
-    data <- x$get() # gets the matrix and stores it in data
+    data <- x$get() # if m is NULL, this gets the matrix and stores it in data
     m <- solve(data, ...) # calculates the inverse of the matrix
-    x$setmatrixinv(m)
+    x$setmatrixinv(m) # stores the inverse of the matrix so that it can be retrieved from cache afterwards
     m #returns inverse of the matrix
 }
 
